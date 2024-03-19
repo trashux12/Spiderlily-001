@@ -4,7 +4,7 @@
 
 ### Usage
     ```bash
-        python file_diff.py -f "/home/tash/etcc"
+        python file_diff.py -f file.txt file2.txt
         python folder_diff.py -f folder1 folder2
 
     ```
