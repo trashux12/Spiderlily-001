@@ -35,7 +35,7 @@ curl -s "https://web.archive.org/cdx/search/cdx?url=*.$1&collaps=urlkey&fl=origi
 echo "github_subdomain start ..."
 touch .token
 echo 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 >> .token
-github_subdomain -d $1 -k -e -q -t .token -silent -o $output_folder/$1-github-subdomain-$current_date.txt #Fix Github_subdomain NotWork
+github_subdomain -d $1 -k -e -q -t .token -silent -o $output_folder/$1-github-subdomain-$current_date.txt 
 echo "github_subdomain done :) "
 
 # add c99 subdomain and binaryedge 
