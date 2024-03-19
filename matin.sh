@@ -1,15 +1,16 @@
-echo "8.8.8.8" >> resolver.txt
-echo "4.2.2..4" >> resolver.txt
-
+# Date Variable
 current_date=$(date "+%Y-%m-%d-%H")
+# Create OutPutFolder 
 output_folder="output-$current_date"
 mkdir -p "$output_folder"
 
+echo "8.8.8.8" >> $output_folder/resolver.txt
+echo "4.2.2..4" >> $output_folder/resolver.txt
 
 echo "crt-sh start ... " 
 curl -s "https://crt.sh/?q=$1&output=json" | jq -r ".[].name_value" | sort -u >> $output_folder/$1-crt-sh.txt
 curl -s "https://crt.sh/?o=$2&output=json" | jq -r '.[].common_name' | sed 's/\*\.//g' | sort -u >> $output_folder/$1-crt-sh.txt # ToDo - OutPut File
-cat $output_folder/$1-crt-sh.txt | sort -u >> $1-crt-sh-sort-$current_date.txt # ToDo - OutPut File
+cat $output_folder/$1-crt-sh.txt | sort -u >> $output_folder/$1-crt-sh-sort-$current_date.txt # ToDo - OutPut File
 echo "crt-sh done :) " 
 
 echo " abuseipdb start ... " 
@@ -21,7 +22,7 @@ curl -s "https://rapiddns.io/s/$1?full=1" | grep -E '<td>.*\..*\..*</td>' | sed 
 echo "Rapiddns done :) " 
 
 echo "chaos start ..." 
-chaos -d $1 -silent >> $output_folder/$1-chaos-$current_date.txt #ToDo - OutPut File
+chaos -d $1 -silent >> $output_folder/$1-chaos-$current_date.txt #ToDo fix -> [FTL] Authorization token not specified
 echo "chaos done :) "
 
 echo "subfinder start ..." 
@@ -34,7 +35,7 @@ curl -s "https://web.archive.org/cdx/search/cdx?url=*.$1&collaps=urlkey&fl=origi
 echo "github_subdomain start ..."
 touch .token
 echo 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 >> .token
-github_subdomain -d $1 -k -e -q -t .token -silent -o $output_folder/$1-github-subdomain-$current_date.txt 
+github_subdomain -d $1 -k -e -q -t .token -silent -o $output_folder/$1-github-subdomain-$current_date.txt #Fix Github_subdomain NotWork
 echo "github_subdomain done :) "
 
 # add c99 subdomain and binaryedge 

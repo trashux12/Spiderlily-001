@@ -1,0 +1,4 @@
+go install -v github.com/gwen001/github-subdomains@latest
+go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+go install -v github.com/projectdiscovery/chaos-client/cmd/chaos@latest
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
