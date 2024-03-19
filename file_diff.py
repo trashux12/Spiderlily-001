@@ -1,69 +1,45 @@
-import os
 import argparse
 
-# Task 1: List all .txt files in the folder
-def list_txt_files(folder_path):
-    txt_files = [file for file in os.listdir(folder_path) if file.endswith('.txt')]
-    return txt_files
+# Task 2: Check for differences in text between two files
+def find_different_texts(file1_path, file2_path):
+    with open(file1_path, 'r') as file1:
+        content1 = file1.read()
+    with open(file2_path, 'r') as file2:
+        content2 = file2.read()
 
-# Task 2: Check for differences in text inside the files
-def find_different_texts(folder_path, txt_files):
-    file_contents = {}
-    for file in txt_files:
-        with open(os.path.join(folder_path, file), 'r') as f:
-            file_contents[file] = f.read()
+    if content1 != content2:
+        return content1, content2
+    else:
+        return None, None
 
-    # Check for differences
-    different_files = []
-    for file1 in txt_files:
-        for file2 in txt_files:
-            if file1 != file2 and file_contents[file1] != file_contents[file2]:
-                if (file2, file1) not in different_files:
-                    different_files.append((file1, file2))
-
-    return different_files
-
-# Task 3: Add new content to a new file
-def add_content_to_new_file(file_path, new_content):
-    with open(file_path, 'a') as f:
-        f.write(new_content + '\n')
+# Task 3: Add differences to a new file
+def add_differences_to_new_file(new_file_path, diff_content1, diff_content2):
+    with open(new_file_path, 'a') as new_file:
+        new_file.write("Differences in content:\n")
+        new_file.write("File 1:\n")
+        new_file.write(diff_content1 + '\n')
+        new_file.write("File 2:\n")
+        new_file.write(diff_content2 + '\n')
 
 # Main function
 def main():
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('-f', '--folder', type=str, help='Path to the folder containing text files')
+    parser = argparse.ArgumentParser(description='Find differences between two text files and append them to a new file.')
+    parser.add_argument('-f', '--files', nargs=2, required=True, metavar=('file1', 'file2'), help='Paths to the two text files')
+    parser.add_argument('-n', '--newfile', type=str, default='differences.txt', help='Path to the new file to append differences (default: differences.txt)')
     args = parser.parse_args()
 
-    if args.folder:
-        folder_path = args.folder
-    else:
-        folder_path = "./"
-
-    # Task 1
-    txt_files = list_txt_files(folder_path)
-    print("Text files in the folder:", txt_files)
+    file1_path, file2_path = args.files
+    new_file_path = args.newfile
 
     # Task 2
-    different_texts = find_different_texts(folder_path, txt_files)
-    if different_texts:
-        print("Files with different text content:")
-        for file_pair in different_texts:
-            print(file_pair[0], "and", file_pair[1])
+    diff_content1, diff_content2 = find_different_texts(file1_path, file2_path)
+    if diff_content1 is not None and diff_content2 is not None:
+        print("Differences found between", file1_path, "and", file2_path)
+        print("Appending differences to", new_file_path)
+        # Task 3
+        add_differences_to_new_file(new_file_path, diff_content1, diff_content2)
     else:
-        print("All text files have the same content.")
-
-    # Task 3
-    new_file_path = "new_file.txt"
-    # Extracting new content from the files
-    new_content = set()
-    for file in txt_files:
-        with open(os.path.join(folder_path, file), 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                line = line.strip()
-                if line not in new_content:
-                    new_content.add(line)
-                    add_content_to_new_file(new_file_path, line)
+        print("No differences found between", file1_path, "and", file2_path)
 
 if __name__ == "__main__":
     main()
