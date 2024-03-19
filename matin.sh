@@ -8,8 +8,8 @@ mkdir -p "$output_folder"
 
 echo "crt-sh start ... " 
 curl -s "https://crt.sh/?q=$1&output=json" | jq -r ".[].name_value" | sort -u >> $output_folder/$1-crt-sh.txt
-curl -s "https://crt.sh/?o=$2&output=json" | jq -r '.[].common_name' | sed 's/\*\.//g' | sort -u >> $1-crt-sh.txt # ToDo - OutPut File
-cat $1-crt-sh.txt | sort -u >> $1-crt-sh-sort-$current_date.txt # ToDo - OutPut File
+curl -s "https://crt.sh/?o=$2&output=json" | jq -r '.[].common_name' | sed 's/\*\.//g' | sort -u >> $output_folder/$1-crt-sh.txt # ToDo - OutPut File
+cat $output_folder/$1-crt-sh.txt | sort -u >> $1-crt-sh-sort-$current_date.txt # ToDo - OutPut File
 echo "crt-sh done :) " 
 
 echo " abuseipdb start ... " 
@@ -17,56 +17,56 @@ curl -s "https://www.abuseipdb.com/whois/ford.com" --cookie "cf_clearance=JeEh9i
 echo "abuseipdb done :) "
 
 echo " Rapiddns start ..."
-curl -s "https://rapiddns.io/s/$1?full=1" | grep -E '<td>.*\..*\..*</td>' | sed 's/<\/\?td>//g' | grep ford >> $1-rapiddns-$current_date.txt #ToDo - OutPut File
+curl -s "https://rapiddns.io/s/$1?full=1" | grep -E '<td>.*\..*\..*</td>' | sed 's/<\/\?td>//g' | grep ford >> $output_folder/$1-rapiddns-$current_date.txt #ToDo - OutPut File
 echo "Rapiddns done :) " 
 
 echo "chaos start ..." 
-chaos -d $1 -silent >> $1-chaos-$current_date.txt #ToDo - OutPut File
+chaos -d $1 -silent >> $output_folder/$1-chaos-$current_date.txt #ToDo - OutPut File
 echo "chaos done :) "
 
 echo "subfinder start ..." 
-subfinder -d $1 -silent -all >> $1-subfinder-$current_date.txt
+subfinder -d $1 -silent -all >> $output_folder/$1-subfinder-$current_date.txt
 echo "subfinder done :) " 
 
 echo "webarchive start ..."
-curl -s "https://web.archive.org/cdx/search/cdx?url=*.$1&collaps=urlkey&fl=original" >> $1-webarchive-$current_date.txt
+curl -s "https://web.archive.org/cdx/search/cdx?url=*.$1&collaps=urlkey&fl=original" >> $output_folder/$1-webarchive-$current_date.txt
 
 echo "github_subdomain start ..."
 touch .token
 echo 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 >> .token
-github_subdomain -d $1 -k -e -q -t .token -silent -o $1-github-subdomain-$current_date.txt 
+github_subdomain -d $1 -k -e -q -t .token -silent -o $output_folder/$1-github-subdomain-$current_date.txt 
 echo "github_subdomain done :) "
 
 # add c99 subdomain and binaryedge 
 
 
 echo "check dnsx Crt-sh "
-cat $1-crt-sh-sort-$current_date.txt | dnsx -silent  >> $1-crt-sh-sort-live-$current_date.txt
+cat $output_folder/$1-crt-sh-sort-$current_date.txt | dnsx -silent  >> $output_folder/$1-crt-sh-sort-live-$current_date.txt
 echo "Crt-sh dnsx done" 
 
 echo "check dnsx Abuseipdb"
-cat $1-abuseipdb-$current_date.txt | dnsx -silent  >> $1-abuseipdb-live-$current_date.txt
+cat $output_folder/$1-abuseipdb-$current_date.txt | dnsx -silent  >> $output_folder/$1-abuseipdb-live-$current_date.txt
 echo "Absuseip dnsx done "
 echo "check dnsx Rapiddns"
-cat $1-rapiddns-$current_date.txt | dnsx -silent >> $1-rapiddns-live-$current_date.txt
+cat $output_folder/$1-rapiddns-$current_date.txt | dnsx -silent >> $output_folder/$1-rapiddns-live-$current_date.txt
 echo "Rapiddns dnsx done"
 
 echo "check dnsx chaos"
-cat $1-chaos-$current_date.txt | dnsx -silent  >> $1-chaos-live-$current_date.txt
+cat $output_folder/$1-chaos-$current_date.txt | dnsx -silent  >> $output_folder/$1-chaos-live-$current_date.txt
 echo "chaos dnsx done"
 
 echo "check dnsx subfinder"
-cat $1-subfinder-$current_date.txt | dnsx -silent  >> $1-subfinder-live-$current_date.txt
+cat $output_folder/$1-subfinder-$current_date.txt | dnsx -silent  >> $output_folder/$1-subfinder-live-$current_date.txt
 echo "sufinder dnsx done " 
 
 echo "check dnsx webarchive"
-cat $1-webarchive-$current_date.txt | sort -u | dnsx -silent | sort -u >> $1-webarchive-live-$current_date.txt
+cat $output_folder/$1-webarchive-$current_date.txt | sort -u | dnsx -silent | sort -u >> $output_folder/$1-webarchive-live-$current_date.txt
 
 echo "check dnsx github-subdomain"
-cat $1-github-subdomain-$current_date.txt | dnsx -silent | sort -u >> $1-github-subdomain-live-$current_date.txt
+cat $output_folder/$1-github-subdomain-$current_date.txt | dnsx -silent | sort -u >> $output_folder/$1-github-subdomain-live-$current_date.txt
 
 echo "merge subdomais all providers start ..." 
-cat *-live-$current_date.txt | sort -u >> subdomains-dnsx-live-$current_date.txt
+cat $output_folder/*-live-$current_date.txt | sort -u >> $output_folder/subdomains-dnsx-live-$current_date.txt
 echo "merge all live subdomains done :)"
 
 
