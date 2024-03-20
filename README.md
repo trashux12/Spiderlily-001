@@ -11,5 +11,8 @@
 
 
 #### ToDo
-    - Make This Into One File
+    - Automate Anything
+        1. automate python run every (x) hours
+        2. append any change after run 
+        3. Do Some Quick Help Discossion
 
